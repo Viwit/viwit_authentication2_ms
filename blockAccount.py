@@ -1,5 +1,11 @@
 # export FLASK_APP=blockAccount.py
 # flask run -h localhost -p 8081
+# sudo usermod -aG docker ${USER}
+# su - ${USER}
+# docker system prune -a
+# docker build -t archit  archit
+# docker run archit
+
 
 import connectionDB
 from flask import Flask
@@ -16,11 +22,12 @@ def hello():
 
 @app.route('/update-blockAccount/<id_user>')
 def block_account(id_user):
+    sql = "UPDATE user_viwit SET `block_account`='1', `credit_card`='1' WHERE user_id ='" + id_user + "';"
+    connection_cursor.execute(sql)
+    connection.commit()
+    return "OK", 200
     try:
-        sql = "UPDATE user_viwit SET `block_account`='TRUE', `credit_card`='NULL' WHERE user_id ='" + id_user + "';"
-        connection_cursor.execute(sql)
-        connection.commit()
-        return "OK", 200
+        pass
     except:
         return 'Database connection failed', 500
 
@@ -28,7 +35,7 @@ def block_account(id_user):
 @app.route('/update-unlockAccount/<id_user>')
 def unlock_account(id_user):
     try:
-        sql = "UPDATE user_viwit SET `block_account`='FALSE' WHERE user_id ='" + id_user + "';"
+        sql = "UPDATE user_viwit SET `block_account`='0' WHERE user_id ='" + id_user + "';"
         connection_cursor.execute(sql)
         connection.commit()
         return "OK", 200

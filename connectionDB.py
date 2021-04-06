@@ -30,4 +30,4 @@ def connect():
                 my_cursor.execute("CREATE DATABASE " + database)
                 print("Se ha creado la base de datos " + database)
             except:
-                print("ERROR")
+                print("ERROR, no existe la base de datos, o no se tiene acceso para creacion.")
