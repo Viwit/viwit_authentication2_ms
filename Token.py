@@ -1,13 +1,7 @@
-# export FLASK_APP=Token.py
-# flask run -h localhost -p 8080
-
 from datetime import datetime
 from datetime import timedelta
 import secrets
 import connectionDB
-from flask import Flask
-
-app = Flask(__name__)
 
 connection = connectionDB.connect()
 connection_cursor = connection.cursor()
@@ -29,7 +23,6 @@ def generate_token():
     return state
 
 
-@app.route('/update-token/<id>')
 def update_token(id):
     try:
 
@@ -46,7 +39,6 @@ def update_token(id):
         return 'Database connection failed', 500
 
 
-@app.route('/read-token/<id>')
 def read_token(id):
     try:
         sql = "SELECT * FROM token WHERE token_id ='" + id + "'"
@@ -64,7 +56,6 @@ def read_token(id):
         return 'Database connection failed', 500
 
 
-@app.route('/create-token/')
 def create_token():
     try:
         state = generate_token()

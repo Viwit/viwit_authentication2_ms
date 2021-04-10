@@ -1,4 +1,5 @@
-FROM python:3.8-slim-buster
+FROM python:3
+ENV PYTHONUNBUFFERED 1
 
 WORKDIR /archit
 
@@ -7,4 +8,4 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-CMD ["sh","-c","export FLASK_APP=blockAccount.py && flask run -h localhost -p 8081 && export FLASK_APP=Token.py && flask run -h localhost -p 8080"]
+CMD ["sh","-c","export FLASK_APP=Main.py && flask run -h localhost -p 8080"]
