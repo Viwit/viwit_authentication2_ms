@@ -47,21 +47,21 @@ def read_token(id):
         result = connection_cursor.fetchall()
         state = {
             "id": result[0][0],
-            "token": result[0][1],
-            "initial": result[0][3],
-            "finish": result[0][2]
+            "token": result[0][2],
+            "initial": result[0][4],
+            "finish": result[0][3]
         }
         return state, 200
     except:
         return 'Database connection failed', 500
 
 
-def create_token():
+def create_token(id):
     try:
         state = generate_token()
 
-        sql = "INSERT INTO token (token, expiration_date, creation_date) VALUES (%s, %s, %s)"
-        val = (state["token"], state["finish"], state["initial"])
+        sql = "INSERT INTO token (token, user_id, expiration_date, creation_date) VALUES (%s, %s, %s, %s)"
+        val = (state["token"], id, state["finish"], state["initial"])
         connection_cursor.execute(sql, val)
         connection.commit()
 

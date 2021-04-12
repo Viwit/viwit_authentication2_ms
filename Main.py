@@ -38,6 +38,6 @@ def read_token(id):
     return Token.read_token(id)
 
 
-@app.route('/create-token/')
-def create_token():
-    return Token.create_token()
+@app.route('/create-token/<id>')
+def create_token(id):
+    return Token.create_token(id)
