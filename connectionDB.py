@@ -1,4 +1,5 @@
 import mysql.connector
+import sys
 
 database = "viwit"
 host = "127.0.0.1"
@@ -18,6 +19,9 @@ def connect():
         print("Se ha realizado la conexion a " + database)
         return mydb
     except:
+	print("No se ha logrado la conexion a la base de datos: ")
+	print(sys.exc_info()[0])
+	print(sys.exc_info()[1])
         try:
             mydb = mysql.connector.connect(
                 host=host,
@@ -29,4 +33,7 @@ def connect():
             my_cursor.execute("CREATE DATABASE " + database)
             print("Se ha creado la base de datos " + database)
         except:
-            print("ERROR, no existe la base de datos, o no se tiene acceso para creacion.")
+	    print("No se ha logrado crear la base de datos: ")
+	    print(sys.exc_info()[0])
+	    print(sys.exc_info()[1])
+	    sys.exit(0)
