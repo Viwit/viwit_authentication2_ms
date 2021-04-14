@@ -36,7 +36,7 @@ def update_token(id):
         connection.commit()
         return {"id": id}, 200
     except:
-        return 'Database connection failed', 500
+        return {"message": "Database connection failed"}, 500
 
 
 def read_token(id):
@@ -53,7 +53,7 @@ def read_token(id):
         }
         return state, 200
     except:
-        return 'Database connection failed', 500
+        return {"message": "Database connection failed"}, 500
 
 
 def create_token(id):
@@ -67,4 +67,4 @@ def create_token(id):
 
         return {"id": connection_cursor.lastrowid}, 200
     except:
-        return 'Database connection failed', 500
+        return {"message": "Database connection failed"}, 500
