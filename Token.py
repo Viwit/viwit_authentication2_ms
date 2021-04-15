@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timedelta
 import secrets
 import connectionDB
+import sys
 
 connection = connectionDB.connect()
 connection_cursor = connection.cursor()
@@ -31,11 +32,13 @@ def update_token(id):
         sql = "UPDATE tokens SET `token`='" + state["token"] + \
               "', `expiration_date`='" + state["finish"].__str__() + \
               "', `creation_date`='" + state["initial"].__str__() + \
-              "' WHERE token_id ='" + id + "';"
+              "' WHERE user_id ='" + id + "';"
         connection_cursor.execute(sql)
         connection.commit()
         return {"id": id}, 200
     except:
+	print(sys.exc_info()[0])
+        print(sys.exc_info()[1])
         return {"message": "Database connection failed"}, 500
 
 
@@ -47,12 +50,14 @@ def read_token(id):
         result = connection_cursor.fetchall()
         state = {
             "id": result[0][0],
-            "token": result[0][2],
+            "token": result[0][1],
             "initial": result[0][4],
             "finish": result[0][3]
         }
         return state, 200
     except:
+	print(sys.exc_info()[0])
+        print(sys.exc_info()[1])
         return {"message": "Database connection failed"}, 500
 
 
@@ -67,4 +72,6 @@ def create_token(id):
 
         return {"id": connection_cursor.lastrowid}, 200
     except:
+	print(sys.exc_info()[0])
+        print(sys.exc_info()[1])
         return {"message": "Database connection failed"}, 500

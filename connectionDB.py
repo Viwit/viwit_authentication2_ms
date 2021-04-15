@@ -1,10 +1,10 @@
 import mysql.connector
 import sys
 
-database = "viwit"
-host = "127.0.0.1"
-user = "root"
-password = "Password123#@!"
+database = "b7hvkzeot7rrwgjxe7qq"
+host = "b7hvkzeot7rrwgjxe7qq-mysql.services.clever-cloud.com"
+user = "uynepu7prokjcn8k"
+password = "evR43cetezZNG3oaYhW5"
 
 
 def connect():
