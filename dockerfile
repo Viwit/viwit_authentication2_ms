@@ -8,4 +8,4 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-CMD ["sh","-c","export FLASK_APP=Main.py && flask run -h localhost -p 8080"]
+CMD ["sh","-c","export FLASK_APP=Main.py && flask run -h 0.0.0.0 -p 8080"]
