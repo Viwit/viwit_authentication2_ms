@@ -37,8 +37,6 @@ def update_token(id):
         connection.commit()
         return {"id": id}, 200
     except:
-	print(sys.exc_info()[0])
-        print(sys.exc_info()[1])
         return {"message": "Database connection failed"}, 500
 
 
@@ -56,8 +54,6 @@ def read_token(id):
         }
         return state, 200
     except:
-	print(sys.exc_info()[0])
-        print(sys.exc_info()[1])
         return {"message": "Database connection failed"}, 500
 
 
@@ -72,6 +68,4 @@ def create_token(id):
 
         return {"id": connection_cursor.lastrowid}, 200
     except:
-	print(sys.exc_info()[0])
-        print(sys.exc_info()[1])
         return {"message": "Database connection failed"}, 500

@@ -16,8 +16,6 @@ def block_account(id_user):
         connection.commit()
         return {"message": "OK"}, 200
     except:
-	print(sys.exc_info()[0])
-        print(sys.exc_info()[1])
         return {"message": "Database connection failed"}, 500
 
 
@@ -28,6 +26,4 @@ def unlock_account(id_user):
         connection.commit()
         return {"message": "OK"}, 200
     except:
-	print(sys.exc_info()[0])
-        print(sys.exc_info()[1])
         return {"message": "Database connection failed"}, 500
