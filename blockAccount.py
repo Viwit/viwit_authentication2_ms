@@ -10,7 +10,7 @@ def hello():
 
 def block_account(id_user):
     try:
-        sql = "UPDATE user_viwit SET `block_account`='1', `credit_card`='1' WHERE user_id ='" + id_user + "';"
+        sql = "UPDATE users SET `block_account`='1', `credit_card`='1' WHERE user_id ='" + id_user + "';"
         connection_cursor.execute(sql)
         connection.commit()
         return {"message": "OK"}, 200
@@ -20,7 +20,7 @@ def block_account(id_user):
 
 def unlock_account(id_user):
     try:
-        sql = "UPDATE user_viwit SET `block_account`='0' WHERE user_id ='" + id_user + "';"
+        sql = "UPDATE users SET `block_account`='0' WHERE user_id ='" + id_user + "';"
         connection_cursor.execute(sql)
         connection.commit()
         return {"message": "OK"}, 200

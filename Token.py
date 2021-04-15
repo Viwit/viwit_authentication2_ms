@@ -28,7 +28,7 @@ def update_token(id):
 
         state = generate_token()
 
-        sql = "UPDATE token SET `token`='" + state["token"] + \
+        sql = "UPDATE tokens SET `token`='" + state["token"] + \
               "', `expiration_date`='" + state["finish"].__str__() + \
               "', `creation_date`='" + state["initial"].__str__() + \
               "' WHERE token_id ='" + id + "';"
@@ -41,7 +41,7 @@ def update_token(id):
 
 def read_token(id):
     try:
-        sql = "SELECT * FROM token WHERE token_id ='" + id + "'"
+        sql = "SELECT * FROM tokens WHERE user_id ='" + id + "'"
         connection_cursor.execute(sql)
 
         result = connection_cursor.fetchall()
@@ -60,7 +60,7 @@ def create_token(id):
     try:
         state = generate_token()
 
-        sql = "INSERT INTO token (token, user_id, expiration_date, creation_date) VALUES (%s, %s, %s, %s)"
+        sql = "INSERT INTO tokens (token, user_id, expiration_date, creation_date) VALUES (%s, %s, %s, %s)"
         val = (state["token"], id, state["finish"], state["initial"])
         connection_cursor.execute(sql, val)
         connection.commit()
