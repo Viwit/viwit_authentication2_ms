@@ -1,10 +1,10 @@
 import mysql.connector
 import sys
 
-database = "b7hvkzeot7rrwgjxe7qq"
-host = "b7hvkzeot7rrwgjxe7qq-mysql.services.clever-cloud.com"
-user = "uynepu7prokjcn8k"
-password = "evR43cetezZNG3oaYhW5"
+database = "authentication"
+host = "authentication.cjareiirr0dz.us-east-1.rds.amazonaws.com"
+user = "root"
+password = "jbj4cNRqd7NWnMd"
 
 
 def connect():
