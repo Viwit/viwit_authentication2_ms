@@ -43,28 +43,27 @@ def unlock_account(id_user):
         return errorMethod
 
 
-@app.route('/update-token/<id>', methods=['PUT'])
-def update_token(id):
-    if request.method == 'PUT':
-        return Token.update_token(id)
-    else:
-        global errorMethod
-        return errorMethod
-
-
-@app.route('/read-token/<id>', methods=['GET'])
-def read_token(id):
+'''
+@app.route('/token', methods=['GET'])
+def token():
     if request.method == 'GET':
-        return Token.read_token(id)
+        return Token.get_tokens();
     else:
         global errorMethod
         return errorMethod
+'''
 
 
-@app.route('/create-token/<id>', methods=['POST'])
-def create_token(id):
-    if request.method == 'POST':
-        return Token.create_token(id)
+@app.route('/token/<id>', methods=['PUT', 'GET', 'POST', 'DELETE'])
+def token_id(id):
+    if request.method == 'GET':
+        return Token.get_token(id)
+    elif request.method == 'PUT':
+        return Token.put_token(id)
+    elif request.method == 'POST':
+        return Token.post_token(id)
+    elif request.method == 'DELETE':
+        return Token.delete_token(id)
     else:
         global errorMethod
         return errorMethod
