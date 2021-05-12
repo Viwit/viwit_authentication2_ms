@@ -4,11 +4,19 @@ import secrets
 import connectionDB
 import sys
 
+token_types = {'Login': "Login", 'QR': "QR"}
 
-def generate_token():
-    token = secrets.token_hex(20)
+
+def generate_token(type):
+    token = secrets.token_hex(32)
     initial = datetime.now()
-    finish = initial + timedelta(minutes=1)
+
+    if type == token_types['Login']:
+        finish = initial + timedelta(minutes=1)
+    elif type == token_types['QR']:
+        finish = initial + timedelta(minutes=15)
+    else:
+        return
 
     initial = initial.strftime('%Y-%m-%d %H:%M:%S')
     finish = finish.strftime('%Y-%m-%d %H:%M:%S')
@@ -21,30 +29,33 @@ def generate_token():
     return state
 
 
-def put_token(id):
+def put_token(id, token):
     try:
+        state_initial = get_token(id, token)
+        state = generate_token(state_initial["type"].__str__())
 
-        state = generate_token()
-        sql = "UPDATE tokens SET `token`='" + state["token"] + \
-              "', `expiration_date`='" + state["finish"].__str__() + \
+        if state_initial["finish"].__str__() > state["initial"].__str__():
+            sql = "UPDATE tokens SET `expiration_date`='" + state["finish"].__str__() + \
               "', `creation_date`='" + state["initial"].__str__() + \
-              "' WHERE user_id ='" + id + "';"
+              "' WHERE user_id ='" + id + "' AND token ='" + state_initial["token"] + "'"
 
-        connection = connectionDB.open_connection()
-        connection_cursor = connection.cursor()
-        connection_cursor.execute(sql)
-        connection.commit()
-        connection_cursor.close()
-        connection.close()
+            connection = connectionDB.open_connection()
+            connection_cursor = connection.cursor()
+            connection_cursor.execute(sql)
+            connection.commit()
+            connection_cursor.close()
+            connection.close()
 
-        return {"id": id}, 200
+            return {"token": get_token(id, token), "isValid": 1}, 200
+        else:
+            return {"token": get_token(id, token), "isValid": 0}, 200
     except:
         return {"error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}, 500
 
 
-def get_token(id):
+def get_token(id, token):
     try:
-        sql = "SELECT * FROM tokens WHERE user_id ='" + id + "'"
+        sql = "SELECT * FROM tokens WHERE user_id ='" + id + "' AND token ='" + token.__str__() + "'"
 
         connection = connectionDB.open_connection()
         connection_cursor = connection.cursor()
@@ -55,41 +66,45 @@ def get_token(id):
             "id": result[0][0],
             "token": result[0][1],
             "initial": result[0][4],
-            "finish": result[0][3]
+            "finish": result[0][3],
+            "type": result[0][5]
         }
 
         connection_cursor.close()
         connection.close()
 
-        return state, 200
+        return state
     except:
-        return {"error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}, 500
+        return {"error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}
 
 
-def post_token(id):
+def post_token(id, type):
+    if type in token_types:
+        try:
+            state = generate_token(type)
+
+            sql = "INSERT INTO tokens (token, user_id, expiration_date, creation_date, type) VALUES (%s, %s, %s, %s, %s)"
+            val = (state["token"], id, state["finish"], state["initial"], type)
+
+            connection = connectionDB.open_connection()
+            connection_cursor = connection.cursor()
+            connection_cursor.execute(sql, val)
+            connection.commit()
+
+            new_id = connection_cursor.lastrowid
+
+            connection_cursor.close()
+            connection.close()
+            return {"id": new_id, "token": state["token"]}, 200
+        except:
+            return {"error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}, 500
+    else:
+        return {"error 1": "bad request, type not found"}, 400
+
+
+def delete_token(id, token):
     try:
-        state = generate_token()
-
-        sql = "INSERT INTO tokens (token, user_id, expiration_date, creation_date) VALUES (%s, %s, %s, %s)"
-        val = (state["token"], id, state["finish"], state["initial"])
-
-        connection = connectionDB.open_connection()
-        connection_cursor = connection.cursor()
-        connection_cursor.execute(sql, val)
-        connection.commit()
-
-        new_id = connection_cursor.lastrowid
-
-        connection_cursor.close()
-        connection.close()
-        return {"id": new_id}, 200
-    except:
-        return {"error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}, 500
-
-
-def delete_token(id):
-    try:
-        sql = "DELETE FROM tokens WHERE user_id ='" + id + "'"
+        sql = "DELETE FROM tokens WHERE user_id ='" + id + "' AND token ='" + token.__str__() + "'"
 
         connection = connectionDB.open_connection()
         connection_cursor = connection.cursor()

@@ -54,16 +54,14 @@ def token():
 '''
 
 
-@app.route('/token/<id>', methods=['PUT', 'GET', 'POST', 'DELETE'])
-def token_id(id):
-    if request.method == 'GET':
-        return Token.get_token(id)
-    elif request.method == 'PUT':
-        return Token.put_token(id)
+@app.route('/token/<id>/<arg>', methods=['PUT', 'GET', 'POST', 'DELETE'])
+def token_id(id, arg):
+    if request.method == 'PUT':
+        return Token.put_token(id, arg)
     elif request.method == 'POST':
-        return Token.post_token(id)
+        return Token.post_token(id, arg)
     elif request.method == 'DELETE':
-        return Token.delete_token(id)
+        return Token.delete_token(id, arg)
     else:
         global errorMethod
         return errorMethod
