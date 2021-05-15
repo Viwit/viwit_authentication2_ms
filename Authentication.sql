@@ -15,9 +15,9 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 
 -- -----------------------------------------------------
--- Table `token`
+-- Table `tokens`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `token` (
+CREATE TABLE IF NOT EXISTS `tokens` (
   `token_id` INT NOT NULL AUTO_INCREMENT,
   `token` VARCHAR(128) NOT NULL,
   `user_id` INT NOT NULL,
