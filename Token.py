@@ -12,9 +12,9 @@ def generate_token(type):
     initial = datetime.now()
 
     if type == token_types['Login']:
-        finish = initial + timedelta(minutes=1)
-    elif type == token_types['QR']:
         finish = initial + timedelta(minutes=15)
+    elif type == token_types['QR']:
+        finish = initial + timedelta(minutes=3)
     else:
         return
 
