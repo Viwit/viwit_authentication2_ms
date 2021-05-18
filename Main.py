@@ -5,15 +5,50 @@
 # docker system prune -a
 # docker build -t authentication2 .
 # docker run --network='host' -p 4000:4000 authentication2
+import sys
 
 import blockAccount
 import Token
 from flask import Flask
 from flask import request
 
+import connectionDB
+
 app = Flask(__name__)
 
 errorMethod = "405 Method Not Allowed", 405
+
+
+@app.route('/login/<email>/<password>', methods=['GET'])
+def consult(email, password):
+    try:
+        password = ""
+        sql = "SELECT * FROM users WHERE email ='" + email + "' and user_pasword =''"
+
+        connection = connectionDB.open_connection()
+        connection_cursor = connection.cursor()
+        connection_cursor.execute(sql)
+
+        result = connection_cursor.fetchall()
+        '''state = {
+            "user_id": result[0][0],
+            "firstname": result[0][1],
+            "lastname": result[0][2],
+            "email": result[0][3],
+            "reg_date": result[0][4],
+            "user_pasword": result[0][5],
+            "wallet_id": result[0][6],
+            "block_account": result[0][7],
+            "user_type": result[0][8]
+        }'''
+
+        connection_cursor.close()
+        connection.close()
+        if len(result) > 1:
+            return {"error 1": "HAVE 2 RESULTS wtf?"}, 500
+        return {"isLogin": len(result)}, 200
+    except:
+        return {"error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}
 
 
 @app.route('/hello', methods=['GET'])
