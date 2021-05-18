@@ -20,10 +20,9 @@ errorMethod = "405 Method Not Allowed", 405
 
 
 @app.route('/login/<email>/<password>', methods=['GET'])
-def consult(email, password):
+def login(email, password):
     try:
-        password = ""
-        sql = "SELECT * FROM users WHERE email ='" + email + "' and user_pasword =''"
+        sql = "SELECT * FROM users WHERE email ='" + email + "' and user_password ='" + password + "'"
 
         connection = connectionDB.open_connection()
         connection_cursor = connection.cursor()
