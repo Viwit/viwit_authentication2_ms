@@ -22,7 +22,7 @@ errorMethod = "405 Method Not Allowed", 405
 @app.route('/login/<email>/<password>', methods=['GET'])
 def login(email, password):
     try:
-        sql = "SELECT * FROM users WHERE email ='" + email + "' and user_password ='" + password + "'"
+        sql = "SELECT * FROM users WHERE email ='" + email + "' and user_pasword ='" + password + "'"
 
         connection = connectionDB.open_connection()
         connection_cursor = connection.cursor()
@@ -53,6 +53,8 @@ def login(email, password):
 @app.route('/hello', methods=['GET'])
 def hello():
     if request.method == 'GET':
+        connection = connectionDB.open_connection()
+        connection.close()
         return blockAccount.hello()
     else:
         global errorMethod

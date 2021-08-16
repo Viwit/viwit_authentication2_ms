@@ -1,10 +1,10 @@
 import mysql.connector
 import sys
 
-database = "viwit"
-host = "authentication.cjareiirr0dz.us-east-1.rds.amazonaws.com"
-user = "root"
-password = "jbj4cNRqd7NWnMd"
+database = "ikHV5b7fXF"
+host = "remotemysql.com"
+user = "ikHV5b7fXF"
+password = "sub54mrAjY"
 
 
 def open_connection():
