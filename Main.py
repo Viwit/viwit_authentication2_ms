@@ -45,7 +45,7 @@ def login(email, password):
         connection.close()
         if len(result) > 1:
             return {"error 1": "HAVE 2 RESULTS wtf?"}, 500
-        return {"isLogin": len(result)}, 200
+        return {"isLogin": len(result), "user_id": result[0][0]}, 200
     except:
         return {"error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}
 
