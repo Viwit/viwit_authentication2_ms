@@ -9,9 +9,9 @@
 
 # for init docker is necesary use this command
 # Building the image 
-```docker build -t authentication2 .
+docker build -t authentication2 .
 # Running the image
 
 ever run in port 8080
-```docker run --network='host' -p 8080:8080 authentication2```
+docker run --network='host' -p 8080:8080 authentication2
 
