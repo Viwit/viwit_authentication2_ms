@@ -47,7 +47,7 @@ def login(email, password):
             return {"error 1": "HAVE 2 RESULTS wtf?"}, 500
         return {"isLogin": len(result), "user_id": result[0][0]}, 200
     except:
-        return {"error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}
+        return {"isLogin": "0","user_id": 0,"error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}
 
 
 @app.route('/hello', methods=['GET'])
