@@ -22,7 +22,7 @@ errorMethod = "405 Method Not Allowed", 405
 @app.route('/login/<email>/<password>', methods=['GET'])
 def login(email, password):
     try:
-        sql = "SELECT * FROM users WHERE email ='" + email + "' and user_pasword ='" + password + "'"
+        sql = "SELECT * FROM users WHERE email ='" + email + "' and user_password ='" + password + "'"
 
         connection = connectionDB.open_connection()
         connection_cursor = connection.cursor()
@@ -35,7 +35,7 @@ def login(email, password):
             "lastname": result[0][2],
             "email": result[0][3],
             "reg_date": result[0][4],
-            "user_pasword": result[0][5],
+            "user_password": result[0][5],
             "wallet_id": result[0][6],
             "block_account": result[0][7],
             "user_type": result[0][8]
