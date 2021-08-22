@@ -47,7 +47,7 @@ def login(email, password):
             return {"error 1": "HAVE 2 RESULTS wtf?"}, 500
         return {"isLogin": len(result), "user_id": result[0][0]}, 200
     except:
-        return {"isLogin": "0","user_id": 0,"error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}
+        return {"isLogin": "0", "user_id": 0, "error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}
 
 
 @app.route('/hello', methods=['GET'])
@@ -98,6 +98,25 @@ def token_id(id, arg):
         return Token.post_token(id, arg)
     elif request.method == 'DELETE':
         return Token.delete_token(id, arg)
+    else:
+        global errorMethod
+        return errorMethod
+
+
+@app.route('/token-firebase/<id>/<firebase>', methods=['PUT', 'GET', 'POST', 'DELETE'])
+def token_firebase(id, firebase):
+    if request.method == 'POST':
+        data = Token.post_token(id, "Login")
+        return Token.put_token_firebase(id, data[0]["token"], firebase)
+    else:
+        global errorMethod
+        return errorMethod
+
+
+@app.route('/token-firebase/<id>', methods=['PUT', 'GET', 'POST', 'DELETE'])
+def token_firebase_get(id):
+    if request.method == 'GET':
+        return Token.get_token_firebase(id)
     else:
         global errorMethod
         return errorMethod
