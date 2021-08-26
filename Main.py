@@ -14,9 +14,46 @@ from flask import request
 
 import connectionDB
 
+import ldap
+import json
+
+# LDAP config
+LDAP_SERVER    = "ldap://localhost:389"
+LDAP_BASE_DN = "dc=arqsoft,dc=unal,dc=edu,dc=co"
+LDAP_ATTRS   = ["cn", "dn", "sn", "givenName"]
+
 app = Flask(__name__)
 
 errorMethod = "405 Method Not Allowed", 405
+
+def check_credentials(username, password):
+   """
+   Verifies credentials for username and password against a LDAP server.
+   Returns some of the user attributes on success or a string describing the
+   error on failure.
+   """
+   ldap_user = "uid=%s,%s" % (username, LDAP_BASE_DN)
+   ldap_filter = "(uid=%s)" % username
+   try:
+       # Build a LDAP client
+       ldap_client = ldap.initialize(LDAP_SERVER)
+       # Set LDAPv3 option
+       ldap_client.set_option(ldap.OPT_PROTOCOL_VERSION,3)
+       # Try to bind as username/password
+       ldap_client.simple_bind_s(ldap_user,password)
+   except ldap.INVALID_CREDENTIALS:
+       ldap_client.unbind()
+       return json.dumps('Wrong username or password.')
+   except ldap.SERVER_DOWN:
+       return json.dumps('LDAP server not available.')
+   # Authentication is OK
+   # Get user attributes defined in LDAP_ATTRS
+   user_info = json.dumps(ldap_client.search_s(LDAP_BASE_DN,
+                                        ldap.SCOPE_SUBTREE,
+                                        ldap_filter,
+                                        LDAP_ATTRS)[0][1])
+   ldap_client.unbind()
+   return user_info
 
 
 @app.route('/login/<email>/<password>', methods=['GET'])
@@ -53,9 +90,7 @@ def login(email, password):
 @app.route('/hello', methods=['GET'])
 def hello():
     if request.method == 'GET':
-        connection = connectionDB.open_connection()
-        connection.close()
-        return blockAccount.hello()
+        return check_credentials("cn=admin,dc=arqsoft,dc=unal,dc=edu,dc=co", "admin")
     else:
         global errorMethod
         return errorMethod
@@ -120,3 +155,5 @@ def token_firebase_get(id):
     else:
         global errorMethod
         return errorMethod
+
+
