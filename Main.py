@@ -11,78 +11,45 @@ import blockAccount
 import Token
 from flask import Flask
 from flask import request
+import requests
 
 import connectionDB
 
-import ldap
 import json
-
-# LDAP config
-LDAP_SERVER    = "ldap://localhost:389"
-LDAP_BASE_DN = "dc=arqsoft,dc=unal,dc=edu,dc=co"
-LDAP_ATTRS   = ["cn", "dn", "sn", "givenName"]
 
 app = Flask(__name__)
 
 errorMethod = "405 Method Not Allowed", 405
 
-def check_credentials(username, password):
-   """
-   Verifies credentials for username and password against a LDAP server.
-   Returns some of the user attributes on success or a string describing the
-   error on failure.
-   """
-   ldap_user = "uid=%s,%s" % (username, LDAP_BASE_DN)
-   ldap_filter = "(uid=%s)" % username
-   try:
-       # Build a LDAP client
-       ldap_client = ldap.initialize(LDAP_SERVER)
-       # Set LDAPv3 option
-       ldap_client.set_option(ldap.OPT_PROTOCOL_VERSION,3)
-       # Try to bind as username/password
-       ldap_client.simple_bind_s(ldap_user,password)
-   except ldap.INVALID_CREDENTIALS:
-       ldap_client.unbind()
-       return json.dumps('Wrong username or password.')
-   except ldap.SERVER_DOWN:
-       return json.dumps('LDAP server not available.')
-   # Authentication is OK
-   # Get user attributes defined in LDAP_ATTRS
-   user_info = json.dumps(ldap_client.search_s(LDAP_BASE_DN,
-                                        ldap.SCOPE_SUBTREE,
-                                        ldap_filter,
-                                        LDAP_ATTRS)[0][1])
-   ldap_client.unbind()
-   return user_info
-
-
 @app.route('/login/<email>/<password>', methods=['GET'])
 def login(email, password):
     try:
-        sql = "SELECT * FROM users WHERE email ='" + email + "' and user_password ='" + password + "'"
+        r = requests.get("http://localhost:3000//api/user/ldap/" + email + "/" + password)
+        if r.text == "true":
+            sql = "SELECT * FROM users WHERE email ='" + email + "' and user_password ='" + password + "'"
 
-        connection = connectionDB.open_connection()
-        connection_cursor = connection.cursor()
-        connection_cursor.execute(sql)
+            connection = connectionDB.open_connection()
+            connection_cursor = connection.cursor()
+            connection_cursor.execute(sql)
 
-        result = connection_cursor.fetchall()
-        '''state = {
-            "user_id": result[0][0],
-            "firstname": result[0][1],
-            "lastname": result[0][2],
-            "email": result[0][3],
-            "reg_date": result[0][4],
-            "user_password": result[0][5],
-            "wallet_id": result[0][6],
-            "block_account": result[0][7],
-            "user_type": result[0][8]
-        }'''
+            result = connection_cursor.fetchall()
+            '''state = {
+                "user_id": result[0][0],
+                "firstname": result[0][1],
+                "lastname": result[0][2],
+                "email": result[0][3],
+                "reg_date": result[0][4],
+                "user_password": result[0][5],
+                "wallet_id": result[0][6],
+                "block_account": result[0][7],
+                "user_type": result[0][8]
+            }'''
 
-        connection_cursor.close()
-        connection.close()
-        if len(result) > 1:
-            return {"error 1": "HAVE 2 RESULTS wtf?"}, 500
-        return {"isLogin": len(result), "user_id": result[0][0]}, 200
+            connection_cursor.close()
+            connection.close()
+            if len(result) > 1:
+                return {"error 1": "HAVE 2 RESULTS wtf?"}, 500
+            return {"isLogin": len(result), "user_id": result[0][0]}, 200
     except:
         return {"isLogin": "0", "user_id": 0, "error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}
 
@@ -90,7 +57,12 @@ def login(email, password):
 @app.route('/hello', methods=['GET'])
 def hello():
     if request.method == 'GET':
-        return check_credentials("cn=admin,dc=arqsoft,dc=unal,dc=edu,dc=co", "admin")
+        r = requests.get('http://localhost:3000//api/user/ldap/oscar/password')
+        if r.text == "true":
+            print("se ha hecho un true")
+        else:
+            print("F")
+        return r.text, r.status_code
     else:
         global errorMethod
         return errorMethod
