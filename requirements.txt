@@ -1,3 +1,4 @@
 mysql.connector
 flask
 mysqlclient==2.0.0
+requests
