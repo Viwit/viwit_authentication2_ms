@@ -24,7 +24,7 @@ errorMethod = "405 Method Not Allowed", 405
 @app.route('/login/<email>/<password>', methods=['GET'])
 def login(email, password):
     try:
-        r = requests.get("http://localhost:3000//api/user/ldap/" + email + "/" + password)
+        r = requests.get("http://54.237.94.101:3000/api/user/ldap/" + email + "/" + password)
         if r.text == "true":
             sql = "SELECT * FROM users WHERE email ='" + email + "' and user_password ='" + password + "'"
 
