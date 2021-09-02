@@ -24,32 +24,30 @@ errorMethod = "405 Method Not Allowed", 405
 @app.route('/login/<email>/<password>', methods=['GET'])
 def login(email, password):
     try:
-        r = requests.get("http://54.237.94.101:3000/api/user/ldap/" + email + "/" + password)
-        if r.text == "true":
-            sql = "SELECT * FROM users WHERE email ='" + email + "' and user_password ='" + password + "'"
+        sql = "SELECT * FROM users WHERE email ='" + email + "' and user_password ='" + password + "'"
 
-            connection = connectionDB.open_connection()
-            connection_cursor = connection.cursor()
-            connection_cursor.execute(sql)
+        connection = connectionDB.open_connection()
+        connection_cursor = connection.cursor()
+        connection_cursor.execute(sql)
 
-            result = connection_cursor.fetchall()
-            '''state = {
-                "user_id": result[0][0],
-                "firstname": result[0][1],
-                "lastname": result[0][2],
-                "email": result[0][3],
-                "reg_date": result[0][4],
-                "user_password": result[0][5],
-                "wallet_id": result[0][6],
-                "block_account": result[0][7],
-                "user_type": result[0][8]
-            }'''
+        result = connection_cursor.fetchall()
+        '''state = {
+            "user_id": result[0][0],
+            "firstname": result[0][1],
+            "lastname": result[0][2],
+            "email": result[0][3],
+            "reg_date": result[0][4],
+            "user_password": result[0][5],
+            "wallet_id": result[0][6],
+            "block_account": result[0][7],
+            "user_type": result[0][8]
+        }'''
 
-            connection_cursor.close()
-            connection.close()
-            if len(result) > 1:
-                return {"error 1": "HAVE 2 RESULTS wtf?"}, 500
-            return {"isLogin": len(result), "user_id": result[0][0]}, 200
+        connection_cursor.close()
+        connection.close()
+        if len(result) > 1:
+            return {"error 1": "HAVE 2 RESULTS wtf?"}, 500
+        return {"isLogin": len(result), "user_id": result[0][0]}, 200
     except:
         return {"isLogin": "0", "user_id": 0, "error 1": str(sys.exc_info()[0]), "error 2": str(sys.exc_info()[1])}
 
@@ -57,12 +55,9 @@ def login(email, password):
 @app.route('/hello', methods=['GET'])
 def hello():
     if request.method == 'GET':
-        r = requests.get('http://localhost:3000//api/user/ldap/oscar/password')
-        if r.text == "true":
-            print("se ha hecho un true")
-        else:
-            print("F")
-        return r.text, r.status_code
+        connection = connectionDB.open_connection()
+        connection.close()
+        return blockAccount.hello()
     else:
         global errorMethod
         return errorMethod
